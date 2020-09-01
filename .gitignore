@@ -1,0 +1,6 @@
+.env
+.nvmrc
+*.DS_Store
+node_modules/
+
+*-service-account-credentials.json

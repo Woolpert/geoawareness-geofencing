@@ -1,0 +1,6 @@
+indexes:
+  - kind: Geofence
+    ancestor: yes
+    properties:
+      - name: range
+        direction: asc

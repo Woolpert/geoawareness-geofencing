@@ -1,0 +1,30 @@
+{
+  "name": "geoaware-point-in-poly",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node listener.js",
+    "test": "ava"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "ava": "^3.8.2"
+  },
+  "dependencies": {
+    "@google-cloud/datastore": "^6.0.0",
+    "@google-cloud/pubsub": "^2.1.0",
+    "@turf/boolean-point-in-polygon": "^6.0.1",
+    "@turf/helpers": "^6.1.4",
+    "chance": "^1.1.6",
+    "decode-google-map-polyline": "^1.0.1",
+    "dotenv": "^8.2.0"
+  },
+  "ava": {
+    "files": [
+      "!test/test_utils.js",
+      "!test/seed_repository.js"
+    ]
+  }
+}
