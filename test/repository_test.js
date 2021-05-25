@@ -119,5 +119,5 @@ test('saveOrder update', async t => {
     t.deepEqual(updatedOrder, expected);
 
     repository.deleteOrder(order.orderId, storeName);
-    await repository.deleteStore(storeName);
+    repository.deleteStore(storeName);
 });

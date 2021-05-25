@@ -8,12 +8,7 @@ The Geofencing service performs the following operations:
 
 ## Getting Started
 
-Configure gcloud shell environment.
-
-```
-export NEW_EVENT_STATUS=open # optional
-export INGEST_SUBSCRIPTION_NAME=geoawareness-geofencing-service # optional
-```
+Follow the steps in the [runbook](https://geoawareness.woolpert.io#deploy-to-gcp) to create the foundational components and configure the gcloud shell environment.
 
 Create service account. Example - _geoawareness@geoawareness-sandbox.iam.gserviceaccount.com_.
 
@@ -23,13 +18,12 @@ The service account must have the following minimum permissions:
 - Pub/Sub Subscriber
 - Pub/Sub Publisher (demo script only)
 
-
 ```
 gcloud iam service-accounts create geoawareness
 gcloud projects add-iam-policy-binding $PROJECT_ID --member=serviceAccount:geoawareness@$PROJECT_ID.iam.gserviceaccount.com --role=roles/editor
 ```
 
-Create key for service account and download credentials json file. This step is required if running the tests or demo locally.
+Create key for service account and download credentials json file. This step is required for running the tests and for running the demo locally.
 
 ```
 export GOOGLE_APPLICATION_CREDENTIALS=geoawareness-service-account-credentials.json
@@ -44,7 +38,7 @@ from the console, then select 'Datastore mode'.
 
 ```bash
 gcloud app create
-gcloud alpha datastore databases create --region $GCP_REGION
+gcloud datastore databases create --region $GCP_REGION
 ```
 
 Build Datastore indexes.
@@ -63,6 +57,13 @@ gcloud pubsub topics create geoawareness-ingest
 gcloud pubsub subscriptions create geoawareness-geofencing-service --topic geoawareness-ingest
 ```
 
+### Environment variables
+
+```
+export NEW_EVENT_STATUS=open # optional
+export INGEST_SUBSCRIPTION_NAME=geoawareness-geofencing-service # optional
+```
+
 ## Run tests
 
 ```
@@ -70,9 +71,7 @@ npm install
 npm test
 ```
 
-## Run demo
-
-Seed Firestore (DataStore mode) database.
+## Run demo locally
 
 ```bash
 # Seed Firestore (DataStore mode) database.
@@ -101,6 +100,7 @@ gcloud builds submit --tag gcr.io/$PROJECT_ID/geoawareness-geofencing-service
 
 gcloud compute instances create-with-container geoawareness-geofencing-service  \
 --container-image=gcr.io/$PROJECT_ID/geoawareness-geofencing-service \
+--network-interface=network=geoawareness,subnet=geoawareness-$GCP_REGION,no-address \
 --service-account=geoawareness@$PROJECT_ID.iam.gserviceaccount.com \
 --scopes=default,pubsub,datastore \
 --machine-type=e2-micro \
@@ -120,6 +120,7 @@ message was received for processing.
 
 ### Updating deployed container
 
+To deploy source code changes:
 ```
 gcloud builds submit --tag gcr.io/$PROJECT_ID/geoawareness-geofencing-service
 gcloud compute instances update-container geoawareness-geofencing-service --container-image gcr.io/$PROJECT_ID/geoawareness-geofencing-service
