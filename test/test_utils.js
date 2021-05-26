@@ -99,6 +99,38 @@ const createOrderEvent = () => {
     };
 }
 
+const createPriorEvent = () => {
+    return {
+        eventLocation: {
+            longitude: -93.22628974914551,
+            latitude: 36.649897327044464
+        },
+        eventTimestamp: 1593563100,
+        innerGeofence: {
+            rangeType: 'time',
+            range: 300,
+            intersectsEvent: true
+        },
+        geofences: [
+            {
+                rangeType: 'time',
+                range: 120,
+                intersectsEvent: false
+            },
+            {
+                rangeType: 'time',
+                range: 300,
+                intersectsEvent: true
+            },
+            {
+                rangeType: 'time',
+                range: 600,
+                intersectsEvent: true
+            }
+        ]
+    }
+}
+
 const createLatestEvent = () => {
     return {
         ...createOrderEvent(),
@@ -133,4 +165,5 @@ exports.createOrders = createOrders;
 exports.createOrder = createOrder;
 exports.createEvent = createEvent;
 exports.createOrderEvent = createOrderEvent;
+exports.createPriorEvent = createPriorEvent;
 exports.createLatestEvent = createLatestEvent;

@@ -1,8 +1,7 @@
 const test = require('ava');
 const geofencing = require('../src/geofencing');
-const utils = require('./test_utils');
-const chance = require('chance').Chance();
 const fs = require('fs');
+const utils = require('./test_utils');
 
 test.before(t => {
     const rawPoly120 = fs.readFileSync('test/fakes/time_120_poly.json', 'utf8');
@@ -59,4 +58,18 @@ test('findInnerGeofence event outside any geofence', t => {
     const geofences = geofencing.intersectEvent([t.context.geofence120, t.context.geofence300], eventPoint);
     const innerGeofence = geofencing.findInnerGeofence(geofences);
     t.is(innerGeofence, null);
+});
+
+test('geofenceTriggered event triggers', t => {
+    const priorEvent = utils.createPriorEvent();
+    const latestEvent = utils.createLatestEvent();
+    const geofenceTriggered = geofencing.geofenceTriggered(priorEvent, latestEvent);
+    t.assert(geofenceTriggered, 'geofence successfully triggered');
+});
+
+test('geofenceTriggered event does not trigger', t => {
+    const priorEvent = utils.createLatestEvent(); // intentionally set prior to latest
+    const latestEvent = utils.createLatestEvent();
+    const geofenceTriggered = geofencing.geofenceTriggered(priorEvent, latestEvent);
+    t.assert(!geofenceTriggered, 'geofence not triggered');
 });

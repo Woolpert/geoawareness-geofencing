@@ -53,8 +53,13 @@ Create Pub/Sub topic and subscription.
 
 ```
 gcloud services enable pubsub.googleapis.com
+
+# event ingest topic
 gcloud pubsub topics create geoawareness-ingest
 gcloud pubsub subscriptions create geoawareness-geofencing-service --topic geoawareness-ingest
+
+# geofence trigger topic
+gcloud pubsub topics create geoawareness-geofence-trigger
 ```
 
 ### Environment variables
@@ -62,6 +67,7 @@ gcloud pubsub subscriptions create geoawareness-geofencing-service --topic geoaw
 ```
 export NEW_EVENT_STATUS=open # optional
 export INGEST_SUBSCRIPTION_NAME=geoawareness-geofencing-service # optional
+export GEOFENCE_TRIGGER_TOPIC_NAME=geoawareness-geofence-trigger # optional
 ```
 
 ## Run tests
@@ -85,9 +91,20 @@ node demo/drive-route.js
 ```
 
 You will see JSON payload telemetry for three test users, who eventually reach their
-destinations and the program ends.
+destinations and the program ends. Make sure to end the listener process or future ingested 
+events will continue to be consumed by your local listener.
 
-For existing infrastructure, you only need to run `node demo/drive-route.js`.
+## Run demo on GCP 
+If the service is already deployed to GCP, the GCP-deployed
+service will process the incoming events.
+
+```bash
+# Seed Firestore (DataStore mode) database.
+node demo/seed_repository.js
+
+# Send mock telemetry events for the Dalton Drive route.
+node demo/drive-route.js
+```
 
 ## Deploy to GCP
 
